@@ -43,6 +43,10 @@ RUN curl -sL https://github.com/ind9/gocd-s3-artifacts/releases/download/v${S3_A
 RUN curl -sL https://github.com/ind9/gocd-s3-artifacts/releases/download/v${S3_ARTIFACTS_POLLER}/s3publish-assembly-${S3_ARTIFACTS_POLLER}.jar > s3publish-assembly-${S3_ARTIFACTS_POLLER}.jar 
 ARG HEALTH_CHECK=1.0.2
 RUN curl -sL https://github.com/jmnarloch/gocd-health-check-plugin/releases/download/${HEALTH_CHECK}/gocd-health-check-plugin-${HEALTH_CHECK}.jar > gocd-health-check-plugin-${HEALTH_CHECK}.jar
+ARG OAUTH_LOGIN=2.3
+RUN curl -sL https://github.com/gocd-contrib/gocd-oauth-login/releases/download/v${OAUTH_LOGIN}/github-oauth-login-${OAUTH_LOGIN}.jar > github-oauth-login-${OAUTH_LOGIN}.jar
+ARG GUEST_AUTH=0.2
+RUN curl -sL https://github.com/gocd-contrib/gocd_auth_plugin_guest_user/releases/download/v${GUEST_AUTH}/gocd_auth_plugin_guest_user-1.0.jar > gocd_auth_plugin_guest_user-1.0.jar
 WORKDIR /root/
 COPY opt/qnib/gocd/server/bin/start.sh \
     opt/qnib/gocd/server/bin/healthcheck.sh \
