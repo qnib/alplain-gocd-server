@@ -1,4 +1,4 @@
-FROM qnib/alplain-jre8
+FROM qnib/alplain-openjre8
 
 ENV GOCD_AGENT_AUTOENABLE_KEY=qnibFTW \
     GOCD_SERVER_CLEAN_WORKSPACE=false
