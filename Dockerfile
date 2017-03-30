@@ -49,6 +49,11 @@ ARG GUEST_AUTH=0.2
 RUN curl -sL https://github.com/gocd-contrib/gocd_auth_plugin_guest_user/releases/download/v${GUEST_AUTH}/gocd_auth_plugin_guest_user-1.0.jar > gocd_auth_plugin_guest_user-1.0.jar
 ARG EA_SWARM=1.1.2
 RUN curl -sL https://github.com/gocd-contrib/docker-swarm-elastic-agents/releases/download/v${EA_SWARM}/docker-swarm-elastic-agents-${EA_SWARM}.jar > docker-swarm-elastic-agents-${EA_SWARM}.jar
+ARG YAML_CONFIG=0.4.0
+RUN curl -sL https://github.com/tomzo/gocd-yaml-config-plugin/releases/download/${YAML_CONFIG}/yaml-config-plugin-${YAML_CONFIG}.jar > yaml-config-plugin.jar
+ARG JSON_CONFIG=0.2.0
+ARG JSON_CONFIG_PATCH=0
+RUN curl -sL https://github.com/tomzo/gocd-json-config-plugin/releases/download/${JSON_CONFIG}.${JSON_CONFIG_PATCH}/json-config-plugin-${JSON_CONFIG}.jar > json-config-plugin.jar
 WORKDIR /root/
 COPY opt/qnib/gocd/server/bin/start.sh \
     opt/qnib/gocd/server/bin/healthcheck.sh \
