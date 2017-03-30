@@ -54,6 +54,8 @@ RUN curl -sL https://github.com/tomzo/gocd-yaml-config-plugin/releases/download/
 ARG JSON_CONFIG=0.2.0
 ARG JSON_CONFIG_PATCH=0
 RUN curl -sL https://github.com/tomzo/gocd-json-config-plugin/releases/download/${JSON_CONFIG}.${JSON_CONFIG_PATCH}/json-config-plugin-${JSON_CONFIG}.jar > json-config-plugin.jar
+ARG DOCKER_MATERIAL=0.0.1
+RUN curl -sL https://github.com/qnib/gocd-docker-material-poller/releases/download/${DOCKER_MATERIAL}/go-plugin-api-current.jar > go-plugin-api-current.jar
 WORKDIR /root/
 COPY opt/qnib/gocd/server/bin/start.sh \
     opt/qnib/gocd/server/bin/healthcheck.sh \
