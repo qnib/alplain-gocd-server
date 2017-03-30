@@ -47,7 +47,8 @@ WORKDIR /root/
 COPY opt/qnib/gocd/server/bin/start.sh \
     opt/qnib/gocd/server/bin/healthcheck.sh \
     /opt/qnib/gocd/server/bin/
-ADD opt/qnib/entry/10-gocd-restore.sh /opt/qnib/entry/
-#ADD etc/consul-templates/gocd/server/cruise-config.xml.ctmpl \
-#    /etc/consul-templates/gocd/server/
+ADD opt/qnib/entry/10-gocd-restore.sh \
+    opt/qnib/entry/20-gocd-render-cruise-config.sh \
+    /opt/qnib/entry/
+ADD opt/qnib/gocd/server/etc/cruise-config.xml /opt/qnib/gocd/server/etc/
 CMD ["/opt/qnib/gocd/server/bin/start.sh"]
