@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="87">
   <server artifactsdir="artifacts" agentAutoRegisterKey="GOCD_AGENT_AUTOENABLE_KEY" commandRepositoryLocation="default" />
+  <pipelines group="docker">
+    <pipeline name="alplain-init" template="DockerBuild">
+      <materials>
+        <git url="https://github.com/qnib/alplain-init.git" dest="docker" />
+        <git url="https://github.com/qnib/init-plain.git" dest="init-plain" />
+      </materials>
+    </pipeline>
+    <pipeline name="alplain-gocd-server" template="DockerBuild">
+      <materials>
+        <git url="https://github.com/qnib/alplain-gocd-server.git" />
+        <pipeline pipelineName="alplain-openjre8" stageName="DockerBuild" />
+      </materials>
+    </pipeline>
+    <pipeline name="alplain-gocd-agent" template="DockerBuild">
+      <materials>
+        <git url="https://github.com/qnib/alplain-gocd-agent.git" dest="docker" />
+        <pipeline pipelineName="alplain-openjre8" stageName="DockerBuild" />
+        <git url="https://github.com/qnib/service-scripts.git" dest="service-scripts" />
+      </materials>
+    </pipeline>
+    <pipeline name="alplain-openjre8" template="DockerBuild">
+      <materials>
+        <git url="https://github.com/qnib/alplain-openjre8.git" />
+        <pipeline pipelineName="alplain-init" stageName="DockerBuild" />
+      </materials>
+    </pipeline>
+  </pipelines>
   <templates>
     <pipeline name="DockerBuild">
       <stage name="DockerBuild">
@@ -14,6 +41,24 @@
                     <key>script</key>
                     <value>/opt/service-scripts/gocd/tasks/docker/build.sh</value>
                   </property>
+                  <property>
+                    <key>shtype</key>
+                    <value>bash</value>
+                  </property>
+                </configuration>
+                <runif status="passed" />
+              </task>
+              <task>
+                <pluginConfiguration id="script-executor" version="1" />
+                <configuration>
+                  <property>
+                    <key>script</key>
+                    <value>/opt/service-scripts/gocd/tasks/docker/publish.sh</value>
+                  </property>
+                  <property>
+                    <key>shtype</key>
+                    <value>bash</value>
+                  </property>
                 </configuration>
                 <runif status="passed" />
               </task>
@@ -23,4 +68,20 @@
       </stage>
     </pipeline>
   </templates>
+  <environments>
+    <environment name="docker">
+      <environmentvariables>
+        <variable name="DOCKER_TAG">
+          <value>latest</value>
+        </variable>
+
+      </environmentvariables>
+      <pipelines>
+        <pipeline name="alplain-gocd-agent" />
+        <pipeline name="alplain-gocd-server" />
+        <pipeline name="alplain-init" />
+        <pipeline name="alplain-openjre8" />
+      </pipelines>
+    </environment>
+  </environments>
 </cruise>
