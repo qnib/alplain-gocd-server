@@ -27,6 +27,30 @@
         <pipeline pipelineName="alplain-init" stageName="DockerBuild" />
       </materials>
     </pipeline>
+    <pipeline name="alplain-jre8" template="DockerBuild">
+      <materials>
+        <git url="https://github.com/qnib/alplain-jre8.git" />
+        <pipeline pipelineName="alplain-init" stageName="DockerBuild" />
+      </materials>
+    </pipeline>
+    <pipeline name="plain-grafana4" template="DockerBuild">
+      <materials>
+        <git url="https://github.com/qnib/plain-grafana4.git" />
+        <pipeline pipelineName="alplain-jre8" stageName="DockerBuild" />
+      </materials>
+    </pipeline>
+  </pipelines>
+  <pipelines group="deploy">
+    <pipeline name="deploy-influxdb" template="deploy">
+      <materials>
+        <git url="https://github.com/qnib/service-orchestration.git" invertFilter="true">
+          <filter>
+            <ignore pattern="influxdb" />
+          </filter>
+        </git>
+        <pipeline pipelineName="plain-grafana4" stageName="DockerBuild" />
+      </materials>
+    </pipeline>
   </pipelines>
   <templates>
     <pipeline name="DockerBuild">
@@ -63,6 +87,33 @@
                 <runif status="passed" />
               </task>
             </tasks>
+            <artifacts>
+              <artifact src="target" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="deploy">
+      <stage name="deployStage">
+        <jobs>
+          <job name="deployJob">
+            <tasks>
+              <task>
+                <pluginConfiguration id="script-executor" version="1" />
+                <configuration>
+                  <property>
+                    <key>script</key>
+                    <value>/opt/service-scripts/gocd/tasks/deploy/stack_deploy.sh</value>
+                  </property>
+                  <property>
+                    <key>shtype</key>
+                    <value>bash</value>
+                  </property>
+                </configuration>
+                <runif status="passed" />
+              </task>
+            </tasks>
           </job>
         </jobs>
       </stage>
@@ -74,13 +125,19 @@
         <variable name="DOCKER_TAG">
           <value>latest</value>
         </variable>
-
       </environmentvariables>
       <pipelines>
         <pipeline name="alplain-gocd-agent" />
         <pipeline name="alplain-gocd-server" />
         <pipeline name="alplain-init" />
+        <pipeline name="alplain-jre8" />
         <pipeline name="alplain-openjre8" />
+        <pipeline name="plain-grafana4" />
+      </pipelines>
+    </environment>
+    <environment name="deploy">
+      <pipelines>
+        <pipeline name="deploy-influxdb" />
       </pipelines>
     </environment>
   </environments>
