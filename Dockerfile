@@ -71,4 +71,5 @@ ADD opt/qnib/entry/10-gocd-restore.sh \
     opt/qnib/entry/20-gocd-render-cruise-config.sh \
     /opt/qnib/entry/
 ADD opt/qnib/gocd/server/etc/cruise-config.xml /opt/qnib/gocd/server/etc/
+ENV ENTRYPOINTS_DIR=/opt/qnib/entry/
 CMD ["/opt/qnib/gocd/server/bin/start.sh"]
