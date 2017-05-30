@@ -56,6 +56,13 @@ ARG JSON_CONFIG_PATCH=0
 RUN curl -sL https://github.com/tomzo/gocd-json-config-plugin/releases/download/${JSON_CONFIG}.${JSON_CONFIG_PATCH}/json-config-plugin-${JSON_CONFIG}.jar > json-config-plugin.jar
 ARG DOCKER_MATERIAL=0.0.1
 RUN curl -sL https://github.com/qnib/gocd-docker-material-poller/releases/download/${DOCKER_MATERIAL}/go-plugin-api-current.jar > go-plugin-api-current.jar
+ARG CT_VER=0.18.5
+RUN apk --no-cache add unzip \
+ && curl -Lso /tmp/consul-template.zip https://releases.hashicorp.com/consul-template/${CT_VER}/consul-template_${CT_VER}_linux_amd64.zip \
+ && cd /usr/local/bin \
+ && unzip /tmp/consul-template.zip \
+ && apk --no-cache del unzip \
+ && rm -f /tmp/consul-template.zip
 WORKDIR /root/
 COPY opt/qnib/gocd/server/bin/start.sh \
     opt/qnib/gocd/server/bin/healthcheck.sh \
