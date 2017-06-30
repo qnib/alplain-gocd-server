@@ -1,5 +1,6 @@
 FROM qnib/alplain-openjre8
 
+VOLUME ["/opt/go-server/artifacts/serverBackups/"]
 ENV GOCD_AGENT_AUTOENABLE_KEY=qnibFTW \
     GOCD_SERVER_CLEAN_WORKSPACE=false
 ARG GOCD_URL=https://download.gocd.io/binaries

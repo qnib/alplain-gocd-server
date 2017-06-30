@@ -5,6 +5,7 @@ services:
     ports:
      - 8153:8153
     volumes:
-     - /opt/go-server/artifacts/serverBackups/
+     - /var/run/docker.sock:/var/run/docker.sock
     environment:
      - GOCD_SERVER_CLEAN_WORKSPACE=false
+     - GO_SERVER_SYSTEM_PROPERTIES='-Dplugin.cd.go.contrib.elastic-agent.docker-swarm.log.level=debug'
