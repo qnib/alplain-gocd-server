@@ -1,4 +1,5 @@
-FROM qnib/alplain-openjre8
+ARG DOCKER_REG=docker.io
+FROM ${DOCKER_REG}/qnib/alplain-openjre8
 
 VOLUME ["/opt/go-server/artifacts/serverBackups/"]
 ENV GOCD_AGENT_AUTOENABLE_KEY=qnibFTW \
