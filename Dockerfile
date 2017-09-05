@@ -1,16 +1,18 @@
 ARG DOCKER_REG=docker.io
-FROM ${DOCKER_REG}/qnib/alplain-openjre8
+FROM ${DOCKER_REG}/qnib/alplain-openjre8-prometheus
 
 VOLUME ["/opt/go-server/artifacts/serverBackups/"]
 ENV GOCD_AGENT_AUTOENABLE_KEY=qnibFTW \
     GOCD_SERVER_CLEAN_WORKSPACE=false
 ARG GOCD_URL=https://download.gocd.io/binaries
+ARG GOCD_VER=17.9.0
+ARG GOCD_SUBVER=5368
+LABEL gocd.version=${GOCD_VER}-${GOCD_SUBVER}
 RUN apk --no-cache add curl git openssl \
  && curl -Ls https://github.com/qnib/go-github/releases/download/0.2.2/go-github_0.2.2_MuslLinux > /usr/local/bin/go-github \
  && chmod +x /usr/local/bin/go-github \
- && echo "# consul-content: $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" --limit 1)" \
- && curl -Ls $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" --limit 1) |tar xf - -C /opt/ \
- && source /opt/service-scripts/gocd/common/version \
+ && echo "# consul-content: $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" |head -n1)" \
+ && curl -Ls $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" |head -n1) |tar xf - -C /opt/ \
  && echo "https://download.go.cd/binaries/${GOCD_VER}-${GOCD_SUBVER}/generic/go-server-${GOCD_VER}-${GOCD_SUBVER}.zip" \
  && curl -Ls --url ${GOCD_URL}/${GOCD_VER}-${GOCD_SUBVER}/generic/go-server-${GOCD_VER}-${GOCD_SUBVER}.zip > /tmp/go-server.zip \
  && source /opt/service-scripts/gocd/common/version \
@@ -24,24 +26,24 @@ WORKDIR /opt/go-server/plugins/external/
 # The layers are independently pushed, if they are combined one change will alter the content of the combined layer
 RUN export GORG=gocd-contrib \
  && export GREPO=script-executor-task \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex '.*\.jar' |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 RUN export GORG=manojlds \
  && export GREPO=gocd-docker \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 RUN export GORG=ashwanthkumar \
  && export GREPO=gocd-slack-build-notifier \
  && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
  && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 RUN export GORG=gocd-contrib \
  && export GREPO=gocd-build-status-notifier \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*github-pr-status.*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*github-pr-status.*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*github-pr-status.*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*github-pr-status.*\.jar" |head -n1)
 RUN export GORG=gocd-contrib \
  && export GREPO=deb-repo-poller \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 RUN export GORG=ashwanthkumar \
  && export GREPO=gocd-build-github-pull-requests \
  && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*github-pr-poller.*\.jar" |head -n1)" \
@@ -50,45 +52,41 @@ RUN export GORG=ashwanthkumar \
  && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*git-fb-poller.*\.jar" |head -n1)
 RUN export GORG=Vincit \
  && export GREPO=gocd-slack-task \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 RUN export GORG=varchev \
  && export GREPO=go-generic-artifactory-poller \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 RUN export GORG=ind9 \
  && export GREPO=gocd-s3-artifacts \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3material-assembly.*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3material-assembly.*\.jar" --limit 1) \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3fetch-assembly.*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3fetch-assembly.*\.jar" --limit 1) \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3publish-assembly.*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3publish-assembly.*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3material-assembly.*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3material-assembly.*\.jar" |head -n1) \
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3fetch-assembly.*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3fetch-assembly.*\.jar" |head -n1) \
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3publish-assembly.*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*s3publish-assembly.*\.jar" |head -n1)
 RUN export GORG=jmnarloch \
  && export GREPO=gocd-health-check-plugin \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 RUN export GORG=gocd-contrib \
  && export GREPO=gocd-oauth-login \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)
-RUN export GORG=gocd-contrib \
- && export GREPO=gocd-oauth-login \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 RUN export GORG=gocd-contrib \
  && export GREPO=docker-swarm-elastic-agents \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 
 RUN export GORG=tomzo \
  && export GREPO=gocd-yaml-config-plugin \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 RUN export GORG=tomzo \
  && export GREPO=gocd-json-config-plugin \
- && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)" \
- && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" --limit 1)
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 #RUN export GORG=qnib \
 # && export GREPO=gocd-docker-material-poller \
 # && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
