@@ -1,5 +1,7 @@
-ARG DOCKER_REG=docker.io
-FROM ${DOCKER_REG}/qnib/alplain-openjre8-prometheus
+ARG DOCKER_REGISTRY=docker.io
+ARG DOCKER_IMG_TAG=":3.6"
+ARG DOCKER_IMG_HASH="@sha256:dc4fefaee33ec5afb8cfa3730b53d2116bfe874cce1e621065aa1755eaf4bb64"
+FROM ${DOCKER_REGISTRY}/qnib/alplain-openjre8${DOCKER_IMG_TAG}${DOCKER_IMG_HASH}
 
 VOLUME ["/opt/go-server/artifacts/serverBackups/"]
 ENV GOCD_AGENT_AUTOENABLE_KEY=qnibFTW \
