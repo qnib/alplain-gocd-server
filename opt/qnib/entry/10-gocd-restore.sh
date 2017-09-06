@@ -2,6 +2,7 @@
 set -x
 
 SERVER_INSTALLATION_DIR=/opt/go-server
+SERVER_CONFIG_DIR=/etc/go/
 SERVER_BKP_DIR=/opt/go-server/artifacts/serverBackups/
 ## find latest backup
 LATEST=$(ls ${SERVER_BKP_DIR} |grep ^backup |tail -n1)
@@ -16,8 +17,8 @@ if [[ "X${LATEST}" != "X" ]];then
   mkdir -p ${SERVER_INSTALLATION_DIR}/db/h2db
   unzip -o -d ${SERVER_INSTALLATION_DIR}/db/h2db/ ${SERVER_BKP_DIR}/${LATEST}/db.zip
   ## config-dir.zip
-  mkdir -p ${SERVER_INSTALLATION_DIR}/config/
-  unzip -o -d ${SERVER_INSTALLATION_DIR}/config/ ${SERVER_BKP_DIR}/${LATEST}/config-dir.zip
+  mkdir -p ${SERVER_CONFIG_DIR}/
+  unzip -o -d ${SERVER_CONFIG_DIR}/ ${SERVER_BKP_DIR}/${LATEST}/config-dir.zip
   ## config-repo.zip
   mkdir -p ${SERVER_INSTALLATION_DIR}/db/config.git/
   unzip -o -d ${SERVER_INSTALLATION_DIR}/db/config.git/ ${SERVER_BKP_DIR}/${LATEST}/config-repo.zip
