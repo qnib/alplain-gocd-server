@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="87">
-  <server artifactsdir="artifacts" agentAutoRegisterKey="GOCD_AGENT_AUTOENABLE_KEY" commandRepositoryLocation="default" />
+  <server artifactsdir="artifacts" agentAutoRegisterKey="GOCD_AGENT_AUTOENABLE_KEY" commandRepositoryLocation="default">
+      <security>
+      <authConfigs>
+        <authConfig id="password" pluginId="cd.go.authentication.passwordfile">
+          <property>
+            <key>PasswordFilePath</key>
+            <value>/etc/go/password.properties</value>
+          </property>
+        </authConfig>
+      </authConfigs>
+    </security>
+  </server>
   <pipelines group="docker">
     <pipeline name="alplain-init" template="DockerBuild">
       <materials>
@@ -8,47 +19,16 @@
         <git url="https://github.com/qnib/init-plain.git" dest="init-plain" />
       </materials>
     </pipeline>
-    <pipeline name="alplain-gocd-server" template="DockerBuild">
+    <pipeline name="uplain-init" template="DockerBuild">
       <materials>
-        <git url="https://github.com/qnib/alplain-gocd-server.git" />
-        <pipeline pipelineName="alplain-openjre8" stageName="DockerBuild" />
+        <git url="https://github.com/qnib/uplain-init.git" dest="docker" />
+        <git url="https://github.com/qnib/init-plain.git" dest="init-plain" />
       </materials>
     </pipeline>
-    <pipeline name="alplain-gocd-agent" template="DockerBuild">
+    <pipeline name="dplain-init" template="DockerBuild">
       <materials>
-        <git url="https://github.com/qnib/alplain-gocd-agent.git" dest="docker" />
-        <pipeline pipelineName="alplain-openjre8" stageName="DockerBuild" />
-        <git url="https://github.com/qnib/service-scripts.git" dest="service-scripts" />
-      </materials>
-    </pipeline>
-    <pipeline name="alplain-openjre8" template="DockerBuild">
-      <materials>
-        <git url="https://github.com/qnib/alplain-openjre8.git" />
-        <pipeline pipelineName="alplain-init" stageName="DockerBuild" />
-      </materials>
-    </pipeline>
-    <pipeline name="alplain-jre8" template="DockerBuild">
-      <materials>
-        <git url="https://github.com/qnib/alplain-jre8.git" />
-        <pipeline pipelineName="alplain-init" stageName="DockerBuild" />
-      </materials>
-    </pipeline>
-    <pipeline name="plain-grafana4" template="DockerBuild">
-      <materials>
-        <git url="https://github.com/qnib/plain-grafana4.git" />
-        <pipeline pipelineName="alplain-jre8" stageName="DockerBuild" />
-      </materials>
-    </pipeline>
-  </pipelines>
-  <pipelines group="deploy">
-    <pipeline name="deploy-influxdb" template="deploy">
-      <materials>
-        <git url="https://github.com/qnib/service-orchestration.git" invertFilter="true">
-          <filter>
-            <ignore pattern="influxdb" />
-          </filter>
-        </git>
-        <pipeline pipelineName="plain-grafana4" stageName="DockerBuild" />
+        <git url="https://github.com/qnib/dplain-init.git" dest="docker" />
+        <git url="https://github.com/qnib/init-plain.git" dest="init-plain" />
       </materials>
     </pipeline>
   </pipelines>
@@ -127,18 +107,9 @@
         </variable>
       </environmentvariables>
       <pipelines>
-        <pipeline name="alplain-gocd-agent" />
-        <pipeline name="alplain-gocd-server" />
-        <pipeline name="alplain-init" />
-        <pipeline name="alplain-jre8" />
-        <pipeline name="alplain-openjre8" />
-        <pipeline name="plain-grafana4" />
       </pipelines>
     </environment>
     <environment name="deploy">
-      <pipelines>
-        <pipeline name="deploy-influxdb" />
-      </pipelines>
     </environment>
   </environments>
 </cruise>
