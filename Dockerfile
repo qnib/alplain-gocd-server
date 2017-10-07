@@ -11,8 +11,6 @@ ARG GOCD_VER=17.10.0
 ARG GOCD_SUBVER=5380
 LABEL gocd.version=${GOCD_VER}-${GOCD_SUBVER}
 RUN apk --no-cache add curl git openssl \
- && curl -Ls https://github.com/qnib/go-github/releases/download/0.3.0/go-github_0.3.0_MuslLinux > /usr/local/bin/go-github \
- && chmod +x /usr/local/bin/go-github \
  && echo "# consul-content: $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" |head -n1)" \
  && curl -Ls $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" |head -n1) |tar xf - -C /opt/ \
  && echo "https://download.go.cd/binaries/${GOCD_VER}-${GOCD_SUBVER}/generic/go-server-${GOCD_VER}-${GOCD_SUBVER}.zip" \
