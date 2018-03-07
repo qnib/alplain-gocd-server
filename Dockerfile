@@ -1,17 +1,18 @@
 ARG DOCKER_REGISTRY=docker.io
-ARG DOCKER_IMG_TAG=":3.6"
-ARG DOCKER_IMG_HASH="@sha256:dc4fefaee33ec5afb8cfa3730b53d2116bfe874cce1e621065aa1755eaf4bb64"
+ARG DOCKER_IMG_TAG=":2018-03-07_b91bfb1837d5"
+ARG DOCKER_IMG_HASH=""
+#@sha256:10ceee41bc5d2170d458e419ad95971382b75093270fb373cdd11775a6478ad5"
 FROM ${DOCKER_REGISTRY}/qnib/alplain-openjre8${DOCKER_IMG_TAG}${DOCKER_IMG_HASH}
 
 VOLUME ["/opt/go-server/artifacts/serverBackups/"]
 ENV GOCD_AGENT_AUTOENABLE_KEY=qnibFTW \
     GOCD_SERVER_CLEAN_WORKSPACE=false
 ARG GOCD_URL=https://download.gocd.io/binaries
-ARG GOCD_VER=17.10.0
-ARG GOCD_SUBVER=5380
+ARG GOCD_VER=18.1.0
+ARG GOCD_SUBVER=5937
 LABEL gocd.version=${GOCD_VER}-${GOCD_SUBVER}
 RUN apk --no-cache add curl git openssl \
- && echo "# consul-content: $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" |head -n1)" \
+ && echo "# service-scripts: $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" |head -n1)" \
  && curl -Ls $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" |head -n1) |tar xf - -C /opt/ \
  && echo "https://download.go.cd/binaries/${GOCD_VER}-${GOCD_SUBVER}/generic/go-server-${GOCD_VER}-${GOCD_SUBVER}.zip" \
  && curl -Ls --url ${GOCD_URL}/${GOCD_VER}-${GOCD_SUBVER}/generic/go-server-${GOCD_VER}-${GOCD_SUBVER}.zip > /tmp/go-server.zip \
