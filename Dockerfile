@@ -8,8 +8,8 @@ VOLUME ["/opt/go-server/artifacts/serverBackups/"]
 ENV GOCD_AGENT_AUTOENABLE_KEY=qnibFTW \
     GOCD_SERVER_CLEAN_WORKSPACE=false
 ARG GOCD_URL=https://download.gocd.io/binaries
-ARG GOCD_VER=18.1.0
-ARG GOCD_SUBVER=5937
+ARG GOCD_VER=18.5.0
+ARG GOCD_SUBVER=6679
 LABEL gocd.version=${GOCD_VER}-${GOCD_SUBVER}
 RUN apk --no-cache add curl git openssl \
  && echo "# service-scripts: $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" |head -n1)" \
