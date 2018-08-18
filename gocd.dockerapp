@@ -1,5 +1,5 @@
 ---
-version: 18.7.0-1
+version: 18.7.0-2
 name: gocd
 description: "CI/CD pipeline via GoCD using one agent"
 maintainers:
@@ -102,7 +102,7 @@ gocd:
     replicas: 1
     img-tag: 2018-08-18_09-55_a4d8610f0cd3
   server:
-    buid-img-tag: 18.7.0-1
+    buid-img-tag: 18.7.0-2
     https-port: 8154
     http-port: 8153
     config:
