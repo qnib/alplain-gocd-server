@@ -11,7 +11,7 @@ ARG GOCD_URL=https://download.gocd.io/binaries
 ARG GOCD_VER=19.1.0
 ARG GOCD_SUBVER=8469
 LABEL gocd.version=${GOCD_VER}-${GOCD_SUBVER}
-RUN apk --no-cache add curl git openssl \
+RUN apk --no-cache add curl git openssl xmlstarlet \
  && echo "# service-scripts: $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" |head -n1)" \
  && curl -Ls $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" |head -n1) |tar xf - -C /opt/ \
  && echo "go-server: https://download.go.cd/binaries/${GOCD_VER}-${GOCD_SUBVER}/generic/go-server-${GOCD_VER}-${GOCD_SUBVER}.zip" \
@@ -106,4 +106,5 @@ ADD opt/qnib/entry/10-gocd-restore.sh \
 ADD opt/qnib/gocd/server/etc/cruise-config.xml /opt/qnib/gocd/server/etc/
 ENV ENTRYPOINTS_DIR=/opt/qnib/entry/ \
     GOCD_BACKUP_RESTORE_ENABLED=false
+RUN apk add moreutils --update-cache --repository http://dl-3.alpinelinux.org/alpine/v3.9/community/
 CMD ["/opt/go-server/server.sh"]
