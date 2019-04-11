@@ -10,6 +10,7 @@ ENV GOCD_AGENT_AUTOENABLE_KEY=qnibFTW \
 ARG GOCD_URL=https://download.gocd.io/binaries
 ARG GOCD_VER=19.2.0
 ARG GOCD_SUBVER=8641
+ARG CT_VER=0.20.0
 LABEL gocd.version=${GOCD_VER}-${GOCD_SUBVER}
 RUN apk --no-cache add curl git openssl xmlstarlet \
  && echo "# service-scripts: $(/usr/local/bin/go-github rLatestUrl --ghorg qnib --ghrepo service-scripts --regex ".*\.tar" |head -n1)" \
@@ -87,12 +88,14 @@ RUN export GORG=tomzo \
  && export GREPO=gocd-json-config-plugin \
  && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
  && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
-
 RUN export GORG=gocd \
  && export GREPO=docker-registry-artifact-plugin \
  && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
  && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
-ARG CT_VER=0.19.3
+RUN export GORG=cma-arnold \
+ && export GREPO=gocd-docker-exec-plugin \
+ && echo "# ${GORG}/${GREPO}: $(/usr/local/bin/go-github rLatestUrl --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)" \
+ && wget -q $(/usr/local/bin/go-github rLatestUrl --ghorg gocd-contrib --ghorg ${GORG} --ghrepo ${GREPO} --regex ".*\.jar" |head -n1)
 RUN apk --no-cache add unzip \
  && curl -Lso /tmp/consul-template.zip https://releases.hashicorp.com/consul-template/${CT_VER}/consul-template_${CT_VER}_linux_amd64.zip \
  && cd /usr/local/bin \
