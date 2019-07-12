@@ -8,8 +8,8 @@ VOLUME ["/opt/go-server/artifacts/serverBackups/"]
 ENV GOCD_AGENT_AUTOENABLE_KEY=qnibFTW \
     GOCD_SERVER_CLEAN_WORKSPACE=false
 ARG GOCD_URL=https://download.gocd.io/binaries
-ARG GOCD_VER=19.2.0
-ARG GOCD_SUBVER=8641
+ARG GOCD_VER=19.5.0
+ARG GOCD_SUBVER=9272
 ARG CT_VER=0.20.0
 LABEL gocd.version=${GOCD_VER}-${GOCD_SUBVER}
 RUN apk --no-cache add curl git openssl xmlstarlet \
